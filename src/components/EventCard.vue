@@ -1,8 +1,16 @@
 <template>
-    <div class="event-card">
+    <!-- <div class="event-card">
         <span>@{{ props.event?.time }} on {{ props.event?.date }}</span>
         <h4>{{ props.event?.title }}</h4>
-    </div>
+    </div> -->
+    <RouterLink class="event-link" :to="{name: 'event-detail', params:{id: event?.id}}">
+        <div class="event-class">
+            <div class="event-card">
+                <span>@{{ event?.time }} on {{ event?.date }}</span>
+                <h4> {{ event?.title }} </h4>
+            </div>
+        </div>
+    </RouterLink>
 </template>
 <script setup lang="ts">
 // import { ref } from 'vue'
@@ -39,5 +47,9 @@ const props = defineProps({
 .event-card:hover{
     transform: scale(1.01);
     box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
+}
+.event-link{
+    color: #2c3e50;
+    text-decoration: none;
 }
 </style>

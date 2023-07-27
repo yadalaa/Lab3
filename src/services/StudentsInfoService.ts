@@ -14,5 +14,8 @@ const apiClient : AxiosInstance = axios.create({
 export default{
     getStudent(): Promise<AxiosResponse<studentInfo[]>>{
         return apiClient.get<studentInfo[]>('/students')
-    }
+    },
+    getStudent_page(perPage: number, page: number): Promise<AxiosResponse<studentInfo[]>>{
+        return apiClient.get<studentInfo[]>('/students?_limit=' + perPage + '&_page=' + page)
+    },
 }
