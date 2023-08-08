@@ -1,5 +1,5 @@
 <template>
-  <div class="student">
+  <div class="flex flex-col items-center">
     <StudentCard
       v-for="student in students"
       :key="student.id"
@@ -25,11 +25,11 @@ const students: Ref<Array<studentInfo>> = ref([]);
 // });
 </script>
 <style>
-.student {
+/* .student {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 .pagination {
   display: flex;
   width: 290px;

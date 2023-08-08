@@ -1,6 +1,6 @@
 <template>
-    <h1>Organizer For Good</h1>
-    <main class="events">
+    <h1 class="text-center text-3xl font-bold mb-4" >Organizer For Good</h1>
+    <main class="flex flex-col items-center">
       <OrganizerCard v-for="event in events" :key="event.id" :event="event"></OrganizerCard>
     </main>
   </template>
@@ -48,9 +48,9 @@
   </script>
   
   <style scoped>
-  .events {
+  /* .events {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
+  } */
   </style>
