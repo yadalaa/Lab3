@@ -22,6 +22,9 @@ import type { Ref } from 'vue'
 import { computed, ref, watchEffect } from 'vue'
 import EventService from '@/services/EventService'
 import type { AxiosResponse } from 'axios';
+import NProgress from 'nprogress'
+import { useRouter } from 'vue-router';
+import { onBeforeRouteUpdate } from 'vue-router';
 const events: Ref<Array<EventItem>> = ref([])
 // EventService.getEvent().then((response) => {
 //   events.value = response.data
@@ -36,20 +39,42 @@ const props = defineProps({
 })
 const hasNextPage = computed(() => {
   //first calculate the total page
-  const totalPages = Math.ceil(totalEvent.value / perPage.value)
+  const totalPages = Math.ceil(totalEvent.value / 3)
   return props.page.valueOf() < totalPages
 })
 // EventService.getEvent(2, props.page).then((response: AxiosResponse<EventItem[]>) => {
 //   events.value = response.data
 // })
-
-watchEffect(() => {
-  EventService.getEvent(perPage.value, props.page).then((response: AxiosResponse<EventItem[]>) => {
-    events.value = response.data
-    totalEvent.value = response.headers['x-total-count']
-    console.log(totalEvent.value)
+const router = useRouter ()
+NProgress
+EventService.getEvent(3, props.page).then((response: AxiosResponse<EventItem[]>) => {
+  events.value = response.data
+  totalEvent.value = response.headers['x-total-count']
+}).catch(() => {
+  router.push({ name: 'NetworkError' })
+// }).finally(() => {
+//   NProgress.done()
+})
+onBeforeRouteUpdate((to, from, next) => {
+  const toPage = Number(to.query.page)
+  // NProgress.start()
+  EventService.getEvent(3, toPage).then((response: AxiosResponse<EventItem[]>) => {
+  events.value = response.data
+  totalEvent.value = response.headers['x-total-count']
+  next()
+  }).catch(() => {
+    next({ name: 'NetworkError' })
+  // }).finally(() => {
+  //   NProgress.done()
   })
 })
+// watchEffect(() => {
+  // EventService.getEvent(perPage.value, props.page).then((response: AxiosResponse<EventItem[]>) => {
+  //   events.value = response.data
+  //   totalEvent.value = response.headers['x-total-count']
+//     console.log(totalEvent.value)
+//   })
+// })
 // const events = ref<EventItem[]>([
 //         {
 //           id: 5928101,
