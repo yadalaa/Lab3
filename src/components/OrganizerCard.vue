@@ -33,7 +33,7 @@ h3 {
   font-family: Avenir, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: right;
+  text-align: left;
   color: #2c3e50;
 }
 .event-card {
