@@ -1,85 +1,78 @@
 <script setup lang="ts">
 import type { EventItem } from '@/type'
 import { ref } from 'vue'
-import EventService from '@/services/EventService';
+import EventService from '@/services/EventService'
 import { useRouter } from 'vue-router'
-import { useMessageStore } from '@/stores/message';
+import { useMessageStore } from '@/stores/message'
+import BaseInput from '@/components/BaseInput.vue'
+import BaseSelect from '@/components/BaseSelect.vue'
+import { type EventOrganizer } from '@/type'
+import OrganizerService from '@/services/OrganizerService'
+
 const store = useMessageStore()
 
 const router = useRouter()
 function saveEvent() {
-    EventService.saveEvent(event.value).then((response) => {console.log(response.data)
-    router.push({
-        name:'event-detail',
+  EventService.saveEvent(event.value)
+    .then((response) => {
+      console.log(response.data)
+      router.push({
+        name: 'event-detail',
         params: { id: response.data.id }
-    })
-    store.updateMessage('You are successfully add a new event for' +response.data.title)
-    setTimeout(()=>{
+      })
+      store.updateMessage('You are successfully add a new event for' + response.data.title)
+      setTimeout(() => {
         store.resetMessage()
-    },3000)
-}).catch(() => {
-    router.push({name: 'network-error'})
-})
+      }, 3000)
+    })
+    .catch(() => {
+      router.push({ name: 'network-error' })
+    })
 }
-const event = ref<EventItem> ({
-    id: 0,
-    category: '',
-    title: '',
-    description:'',
-    location:'',
-    date:'',
-    time:'',
-    organizer:'',
-    petsAllowed:true
+const event = ref<EventItem>({
+  id: 0,
+  category: '',
+  title: '',
+  description: '',
+  location: '',
+  date: '',
+  time: '',
+  organizer: { id: 0, name: '' },
+  petsAllowed: true
 })
 
+const organizers = ref<EventOrganizer[]>([])
+OrganizerService.getOrganizers()
+  .then((response) => {
+    organizers.value = response.data
+  })
+  .catch(() => {
+    router.push({ name: 'network-error' })
+  })
 </script>
 <template>
-      <div>
-            <h1>Create an event</h1>
-            <form @submit.prevent="saveEvent">
-              <label>Category</label>
-              <input
-                v-model="event.category"
-                type="text"
-                placeholder="Category"
-                class="field"
-             />
-              <h3>Name & describe your event</h3>
-        
-              <label>Title</label>
-              <input
-               v-model="event.title"
-                type="text"
-                placeholder="Title"
-                class="field"
-              />
-    
-             <label>Description</label>
-              <input
-                v-model="event.description"
-                type="text"
-                placeholder="Description"
-                class="field"
-              />
-        
-              <h3>Where is your event?</h3>
-        
-              <label>Location</label>
-              <input
-               v-model="event.location"
-                type="text"
-                placeholder="Location"
-                class="field"
-              />
-              <button type="submit">Submit</button>
-            </form>
-        
-            <pre>{{ event }}</pre>
-          </div>
-        </template>
+  <div>
+    <h1>Create an event</h1>
+    <form @submit.prevent="saveEvent">
+      <BaseInput v-model="event.category" type="text" label="Category" />
+      <h3>Name & describe your event</h3>
 
-        <style>
+      <BaseInput v-model="event.title" type="text" label="Title" />
+
+      <h3>Where is your event?</h3>
+
+      <BaseInput v-model="event.location" type="text" label="Location" />
+      <h3>Who is your organizer?</h3>
+      <BaseSelect v-model="event.organizer.id" label="Organizer" 
+          :options="organizers" />
+      <button type="submit">Submit</button>
+    </form>
+
+    <pre>{{ event }}</pre>
+  </div>
+</template>
+
+<style>
 b,
 strong {
   font-weight: bolder;
@@ -309,4 +302,3 @@ select::ms-expand {
   padding: 0 20px;
 }
 </style>
-        
