@@ -13,4 +13,5 @@ export interface EventItem{
 export interface EventOrganizer{
     id: number
     name: string
+    roles: string[];
 }
