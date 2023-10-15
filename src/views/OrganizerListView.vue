@@ -1,7 +1,7 @@
 <template>
     <h1 class="text-center text-3xl font-bold mb-4" >Organizer For Good</h1>
     <main class="flex flex-col items-center">
-      <OrganizerCard v-for="event in events" :key="event.id" :event="event"></OrganizerCard>
+      <OrganizerCard v-for="organizer in events" :key="organizer.id" :organizer="organizer"></OrganizerCard>
       <div class="flex w-290 pagination mt-4">
       <RouterLink :to="{name: 'organizer-list', query: {page: page - 1} }" rel="prev" v-if="page != 1" id="page-prev" class="text-left mr-auto">Prev Page</RouterLink>
       <RouterLink :to="{name: 'organizer-list', query: {page: page + 1} }" rel="next" v-if="hasNextPage" id="page-next" class="text-right ml-auto">Next Page</RouterLink>
@@ -19,7 +19,8 @@ import NProgress from 'nprogress'
 import { useRouter } from 'vue-router';
 import { onBeforeRouteUpdate } from 'vue-router';
 import OrganizerService from '@/services/OrganizerService';
-const events: Ref<Array<OrganizerItem>> = ref([])
+import type { EventOrganizer } from '@/type';
+const events: Ref<Array<EventOrganizer>> = ref([])
 // EventService.getEvent().then((response) => {
 //   events.value = response.data
 // })
@@ -37,7 +38,7 @@ const hasNextPage = computed(() => {
 })
 const router = useRouter ()
 NProgress
-OrganizerService.getOrganizer(3, props.page).then((response: AxiosResponse<OrganizerItem[]>) => {
+OrganizerService.getOrganizer(3, props.page).then((response: AxiosResponse<EventOrganizer[]>) => {
   events.value = response.data
   totalEvent.value = response.headers['x-total-count']
 }).catch(() => {
@@ -45,7 +46,7 @@ OrganizerService.getOrganizer(3, props.page).then((response: AxiosResponse<Organ
 })
 onBeforeRouteUpdate((to, from, next) => {
   const toPage = Number(to.query.page)
-  OrganizerService.getOrganizer(3, toPage).then((response: AxiosResponse<OrganizerItem[]>) => {
+  OrganizerService.getOrganizer(3, toPage).then((response: AxiosResponse<EventOrganizer[]>) => {
   events.value = response.data
   totalEvent.value = response.headers['x-total-count']
   next()

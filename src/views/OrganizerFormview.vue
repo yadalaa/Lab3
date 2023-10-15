@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import OrganizerService from '@/services/OrganizerService';
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message';
+import type { EventOrganizer } from '@/type';
 const store = useMessageStore()
 
 const router = useRouter()
@@ -13,7 +14,7 @@ function saveOrganizer() {
         name:'organizer-list',
         params: { id: response.data.id }
     })
-    store.updateMessage('You are successfully add a new event for' +response.data.title)
+    store.updateMessage('You are successfully add a new event for' +response.data.name)
     setTimeout(()=>{
         store.resetMessage()
     },3000)
@@ -21,16 +22,10 @@ function saveOrganizer() {
     router.push({name: 'network-error'})
 })
 }
-const organizer = ref<OrganizerItem> ({
+const organizer = ref<EventOrganizer> ({
     id: 0,
-    category: '',
-    title: '',
-    description:'',
-    location:'',
-    date:'',
-    time:'',
-    organizer:'',
-    petsAllowed:true
+    name: '',
+    roles: []
 })
 
 </script>
@@ -38,39 +33,13 @@ const organizer = ref<OrganizerItem> ({
       <div>
             <h1>Create an organizer</h1>
             <form @submit.prevent="saveOrganizer">
-              <label>Category</label>
+              <label>Name</label>
               <input
-                v-model="organizer.category"
+                v-model="organizer.name"
                 type="text"
-                placeholder="Category"
+                placeholder="Name"
                 class="field"
              />
-              <h3>Name & describe your event</h3>
-        
-              <label>Title</label>
-              <input
-               v-model="organizer.title"
-                type="text"
-                placeholder="Title"
-                class="field"
-              />
-    
-             <label>Description</label>
-              <input
-                v-model="organizer.description"
-                type="text"
-                placeholder="Description"
-                class="field"
-              />
-        
-              <h3>Where is your event?</h3>
-        
-              <label>Location</label>
-              <input
-               v-model="organizer.location"
-                type="text"
-                placeholder="Location"
-                class="field"
               />
               <button type="submit">Submit</button>
             </form>
